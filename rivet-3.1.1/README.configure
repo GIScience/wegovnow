@@ -1,0 +1,48 @@
+
+
+$Id$
+
+This is an agglomeration of notes about using autoconf and friends to create
+the build environment (configure script, etc) that builds and installs
+Rivet.  It will probably go away eventually.
+
+WHERE IS THE CONFIGURE SCRIPT?
+
+If you've checked out the source tree from SVN, you'll notice there's no
+configure script, and no configure.in, and no Makefile.in, etc.
+
+You get to fiddle the autoconf stuff to create all that.
+
+This used to be hard but not so much anymore.
+
+Try
+
+	autoreconf -fi
+
+
+This runs aclocal, autoconf, automake and whatever else to properly
+generate config.h.in, aclocal.m4, */Makefile.in, etc.
+
+autoconf and stuff has evolved, and old versions won't work and will cause
+weird problems.
+
+You want to be at least at
+
+autoconf 2.58
+automake 1.11
+
+
+CONFIG.GUESS AND FRIENDS
+
+Ever wonder where config.guess, install-sh, and stuff come from?
+(You see them in a lot of packages.)
+
+This stuff a lot can get pooped out there using libtoolize.
+
+libtoolize --force --copy to install config.guess, config.sub, ltmain.sh
+
+This stuff is in the tclconfig directory, which isn't really the best
+name because it's grown to include a lot of autoconf-related stuff.
+
+But it really doesn't matter anymore because autoreconf appears to take
+care of it all.

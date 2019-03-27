@@ -1,0 +1,59 @@
+<?
+set errlist {}
+if { [::rivet::var exists title] } {
+    set title [::rivet::var get title]
+} else {
+    set errlist "You need to enter a title"
+}
+
+if { [::rivet::var exists salary] } {
+    set salary [::rivet::var get salary]
+    if { ! [string is digit $salary] } {
+        lappend errlist "Salary must be a number"
+    }
+} else {
+    lappend errlist "You need to enter a salary"
+}
+
+if { [::rivet::var exists boss] } {
+    set boss [::rivet::var get boss]
+} else {
+    set boss "Mr. Burns"
+}
+
+if { [::rivet::var exists skills] } {
+    set skills [::rivet::var list skills]
+} else {
+    lappend errlist "You need to enter some skills"
+}
+
+if { [llength $errlist] != 0 } {
+    foreach err $errlist {
+        puts "<b> $err </b>"
+    }
+} else {
+    puts "Thanks for the information!"
+    ?>
+    <table>
+      <tbody>
+        <tr>
+          <td><b>Title:</b></td>
+          <td><?= $title ?></td>
+        </tr>
+        <tr>
+          <td><b>Boss:</b></td>
+          <td><?= $boss ?></td>
+        </tr>
+        <tr>
+          <td><b>Salary:</b></td>
+          <td><?= $salary ?></td>
+        </tr>
+        <tr>
+          <td><b>Skills:</b></td>
+          <td><?= $skills ?></td>
+        </tr>
+      </tbody>
+    </table>
+    <?
+}
+?>

@@ -1,0 +1,7 @@
+#/bin/sh
+#\
+exec tclsh "$0" "$@"
+
+if {[lsearch $argv -c]>-1} {
+    eval [lindex $argv [expr {[lsearch $argv -c]+1}]]
+}

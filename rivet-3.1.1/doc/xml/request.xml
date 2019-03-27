@@ -1,0 +1,264 @@
+<section id="request">
+    <title>Apache Child Processes Lifecycle and Request Processing</title>
+
+    <simplesect>
+    	<title>Apache Child Process Lifecycle</title>
+	   <para>
+            Apache Rivet devolves to the <ulink url="">Multi-Processing Module (MPM)</ulink>
+            the task of managing the agents responding to network requests. 
+            An MPM is responsible for creating such agents during the start-up, 
+            and is in charge for terminating existing ones and recreating new 
+            agents when the workload is requiring it. 
+       </para>
+       <para>
+            Apache Rivet &version2-series; supported only the
+            <ulink url="&apachedoc-prefork;">prefork</ulink>
+            MPM which creates child processes as independent agents responding to network requests. 
+            Starting with &version30; also the <ulink url="&apachedoc-worker;">worker</ulink> and
+            <ulink url="&apachedoc-event;">event</ulink> MPM are supported. The worker MPM is
+            an hybrid model where forked child processes in turn create threads as real
+            network agents. Also Apache on Windows&copy; is now supported and tested
+            with the <ulink url="&apachedoc-winnt;">winnt</ulink> MPM, 
+            where a single process creates and manages a large number of thread agents.
+       </para>
+       <para>
+	    		Configuration parameters about this critical point can be read in the
+	    		<ulink url="&apachedoc-perftuning;">Apache
+	    		documentation</ulink>. 
+	    </para>
+	    <para>
+	    		There are 4 stages in the lifetime of an Apache webserver that are relevant
+	    		to Rivet: 
+	    </para>
+	    <orderedlist>
+	    	<listitem>
+	    		<bridgehead>Server Initialization</bridgehead>
+	    		<para>
+               Apaches starts up as a single process. During this stage Apache performs 
+               various preliminary tasks including reading and parsing the configuration. 
+					After the configuration has been read Rivet sets up some internal resources
+					and if a Tcl script is set as argument of a <command>ServerInitScript</command>
+					directive the script is executed. 
+					Variables, arrays or dictionaries created during 
+					the execution of this script will be preserved and later replicated in the 
+					child process intepreters if the prefork MPM is loaded (which restricts
+					this feature to the Unix systems). 
+					The prefork MPM creates new child processes with a fork() 
+					system call, which involves only in memory copy of sections of a
+					process address space. Tcl is careful about reproducing an environment
+					across a fork call in order to have a functional interpreter.
+				</para>
+				<para>
+					Still, regardless the OS and loaded MPM <command>ServerInitScript</command>
+		    		is a good place to do global initialization that doesn't involve
+		    		creation of private data. Example of tasks that can be done
+		    		in this context are IPC methods that must be initialized at this stage.
+		    		With the prefork MPM also importing from namespaces and loading packages
+		    		can be done here removing the burden from the child initialization stage. 	
+	    		</para>
+	    	</listitem>
+	    	<listitem>
+	    		<bridgehead>Child Process Initialization</bridgehead>
+
+	    		<para>
+					A child process calls the MPM bridge interface function to set up
+					the Tcl run time environment,either creating multiple threads each running its
+					Tcl interpreters or, in the case of the prefork MPM bridge, setting up
+					the environment within a the child process itself as a single Tcl thread.
+	    		</para>
+
+	    		<para>
+               This is the stage where most likely you want to open I/O channels,
+               database connections or any other resource that has to be private to an 
+               interpreter and has to persist over a whole thread lifespan.
+               When the option <command>SeparateVirtualInterps</command> is 
+               turned off child processes will have a single interpreter regardless
+		    		the number of virtual hosts configured. The
+               <command>GlobalInitScript</command> is the configuration script 
+               the child process will run once before getting ready to 
+               serve requests
+	    		</para>
+
+	    		<para>
+	    			When <command>SeparateVirtualInterps</command> is turned on 
+	    			each configured virtual host will have its own slave interpreter which
+	    			can will run the <command>ChildInitScript</command> directive as
+	    			initialization script. The	    			
+	    			<command>ChildInitScript</command> has to be
+	    			placed within a &lt;VirtualHost...&gt;...&lt;/VirtualHost ...&gt;
+	    			stanza to associate a script to a specific virtual host initialization.
+	    			This scenario of interpreter separation is extremely useful to
+	    			prevent resource conflicts when different virtual hosts are 
+	    			serving different web applications. 
+	    		</para>
+	    		<para>
+	    			<note>
+	    				<command>GlobalInitScript</command> has no effect to working interpreters
+	    				when <command>SeparateVirtualInterps</command> is set.
+	    			</note>
+	    			<note>
+	    				The lazy MPM bridge implements a model where
+	    				every worker thread has exactly one interpreter and belongs to 
+	    				a single virtual host, therefore <command>SeparateVirtualInterps</command>
+	    				is ignored and you can't share the same interpreter among virtual host
+	    			</note>
+	    		</para>
+	    	</listitem>
+	    	<listitem>
+	    		<bridgehead>Request Processing and Content Generation</bridgehead>
+		  		<para>
+			    		<note>
+			    			This section explain the default request handling procedure which
+			    			was written to let Rivet &version30; work as a drop in replacement 
+			    			of any &version2-generic; module. For a in-depth understanding of
+			    			the new request processing mechanics please read the
+			    			<link linkend="processing">request processing</link> section of the manual
+			    		</note>
+			   </para>
+
+	    		<para>
+                 After a child has been initialized it's ready to serve requests. 
+                 A child process' lifetime is almost entirely spent in this phase, waiting
+                 for connections and responding to requests. At every request the URL 
+                 goes through filter processing and, in case, rewritten
+                 (mod_rewrite, Alias directives, etc). 
+                 Parameter values encoded in the request are made available to the 
+                 environment and finally the script encoded in the URL is run. 
+                 The developer can tell Rivet if optionally the execution has to
+                 be  preceded by a <command>BeforeScript</command> and followed by an
+                 <command>AfterScript</command>. The real script mod_rivet will
+                 execute is the result of the concatenation of the 
+                 <command>BeforeScript</command>,
+                 the script encoded in the URL and the <command>AfterScript</command>.
+                 Thus the whole ensemble of code that makes up a web application might
+                 be running within the same "before" and "after" scripts to which 
+                 the programmer can devolve tasks common to every 
+                 page of an application.
+            </para>
+         </listitem>
+         <listitem>
+            <bridgehead>Child Process Exit</bridgehead>
+            <para>
+                 If no error condition forces the child process to a premature exit, his
+                 life is determined by the Apache configuration parameters. To reduce
+                 the effects of memory leaks in buggy applications the Apache webserver 
+                 forces a child process to exit after a
+                 certain number of requests served. A child process gets replaced 
+                 with a brand new one if the workload of webserver requires so. 
+                 Before the process quits an exit handler can be run
+                 to do some housekeeping, just in case something the could have been 
+                 left behind has to be cleaned up. Like the initialization scripts
+                 <command>ChildExitScript</command> too is a "one shot" script.
+             </para>
+             <para>
+                 The Tcl <command>exit</command> command forces an interpreter to
+                 quit, thus removing the ability of the process embedding it 
+                 to run more Tcl scripts. The child process then is forced
+                 to exit and be replaced by a new one when the workload demands it.
+                 This operation implies the <command>ChildExitScript</command> be
+                 run before the interpreter is actually deleted.
+             </para>
+       	</listitem>
+	   </orderedlist>
+	</simplesect>
+	<simplesect>
+    	<title>Apache Rivet Error and Exception Scripts Directives</title>
+    	
+        <para>
+         Rivet is highly configurable and each of the webserver lifecycle stages 
+         can be exploited to control a web application. 
+         Not only the orderly sequence of stages
+         in a child lifecycle can be controlled with Tcl scripts, but also
+         Tcl error or abnormal conditions taking place during
+         the execution can be caught and handled with specific scripts.
+       </para>
+	    <para>
+	    	Tcl errors (conditions generated when a command exits with code TCL_ERROR) 
+	    	usually result in the printing of a backtrace of the code fragment
+	    	relevant to the error.
+	    	Rivet can set up scripts to trap these errors and run instead
+	    	an <command>ErrorScript</command> to handle it and conceal details
+	    	that usually have no interest for the end user and it
+	    	may show lines of code that ought to remain private. The ErrorScript
+	    	handler might create a polite error page where things
+	    	can be explained in human readable form, thus enabling the end user
+	    	to provide meaningful feedback information. 
+	    </para>
+	    <para>
+	    	In other cases an unmanageable conditions might take place in the data and
+	    	this could demand an immediate interruption of the content generation. These abort 
+	    	conditions can be fired by the <xref linkend="abort_page"/> command, which
+	    	in turn fires the execution of an <command>AbortScript</command> to handle
+	    	the abnormal condition. Starting with Rivet 2.1.0 <xref linkend="abort_page"/>
+	    	accepts a free form parameter that can be retrieved later with the command 
+	    	<xref linkend="abort_code"/>
+	    </para>
+	</simplesect>
+	<simplesect>
+		<title>Tcl Namespaces in Rivet and the <command>::request</command> Namespace</title>
+
+  		<para>
+    		<note>
+    			This section explain the default request handling procedure which
+    			was written to let Rivet &version30; work as a drop in replacement 
+    			of any &version2-generic; module. For a in-depth understanding of
+    			the new request processing mechanics please read the
+    			<link linkend="processing">request processing</link> section of the manual
+    		</note>
+	   </para>
+
+		<para>
+			With the sole exception of .rvt templates, mod_rivet runs pure Tcl scripts 
+			at the global namespace. That means that every variable or procedure 
+			created in Tcl scripts resides by default in the 
+			"::" namespace (just like in traditional Tcl scripting) and they
+			are persistent across different requests until explicitly unset or
+			until the interpreter is deleted.
+			You can create your own application namespaces to store data but
+			it is important to remember that subsequent requests will in general be served 
+			by different child processes. Your application can rely on the fact that 
+			certain application data will be in the interpreter, but you shouldn't 
+			assume the state of a transaction spanning several pages 
+			can be stored in this way and be safely kept available to a 
+			specific client. Sessions exist for this purpose and Rivet ships its own 
+			session package with support for most of popular DBMS. Nonetheless 
+			storing data in the global namespace can be useful, even though scoping 
+			data in a namespace is recommended. I/O channels and
+			database connections are examples of information usually specific 
+			to a process for which you don't want to pay the overhead of creating them
+			at every request, probably causing a dramatic loss in the application
+			performance.
+		</para>
+		<para>
+			A special role in the interpreter is played by the <command>::request</command> 
+			namespace.	The <command>::request</command> namespace is deleted and recreated
+			at every request and Rivet templates (.rvt files) are executed within it.
+		</para>
+		<para> 
+			Unless you're fully qualifying variable names outside the <command>::request</command> 
+			namespace, every variable and procedure created in .rvt files is by default placed in
+			it and deleted before any other requests gets processed. It is therefore safe to
+			create variables or object instances in template files and foresake about them: Rivet
+			will take care of cleaning the namespace up and everything created inside the namespace
+			will be destroyed.
+		</para>
+		<table align="center" title="Apache Rivet Scripts" class="namespaces">
+			<thead>
+				<td>Stage</td><td>Script</td><td>Namespace</td>
+			</thead>
+			<tbody>
+				<tr class="init"><td>Apache Initialization</td><td>ServerInitScript</td><td>::</td></tr>
+				<tr class="childinit"><td rowspan="2">Child Initialization</td><td>GlobalInitScript</td><td>::</td></tr>
+				<tr class="childinit"><td>ChildInitScript</td><td>::</td></tr>
+				<tr class="processing"><td rowspan="6">Request Processing</td><td>BeforeScript</td><td>::</td></tr>
+				<tr class="processing"><td>.rvt</td><td>::request</td></tr>
+				<tr class="processing"><td>.tcl</td><td>::</td></tr>
+				<tr class="processing"><td>AfterScript</td><td>::</td></tr>
+				<tr class="processing"><td>AbortScript</td><td>::</td></tr>
+				<tr class="processing"><td>AfterEveryScript</td><td>::</td></tr>
+				<tr class="childexit"><td>Child Termination</td><td>ChildExitScript</td><td>::</td></tr>
+				<tr class="processing"><td>Error Handling</td><td>ErrorScript</td><td>::</td></tr>
+			</tbody>
+		</table>
+	</simplesect>
+</section>

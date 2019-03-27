@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+  "http://www.oasis-open.org/committees/docbook/xml/4.1.2/docbookx.dtd" [
+    <!ENTITY hello.rvt             SYSTEM "examples-sgml/hello.rvt" >
+    <!ENTITY hello1.rvt            SYSTEM "examples-sgml/hello1.rvt" >
+    <!ENTITY colortable            SYSTEM "examples-sgml/colortable.rvt" >
+    <!ENTITY vars.html             SYSTEM "examples-sgml/vars.html" >
+    <!ENTITY vars.rvt              SYSTEM "examples-sgml/vars.rvt" >
+    <!ENTITY upload.html           SYSTEM "examples-sgml/upload.html" >
+    <!ENTITY upload.rvt	           SYSTEM "examples-sgml/upload.rvt" >
+    <!ENTITY download.tcl          SYSTEM "examples-sgml/download.tcl" >
+    <!ENTITY rivet_web_service.tcl SYSTEM "examples-sgml/rivet_web_service.tcl" >
+    <!ENTITY myapp_request_handler.tcl SYSTEM "examples-sgml/myapp_request_handler.tcl" >
+    <!ENTITY myrivetapp.tcl        SYSTEM "examples-sgml/myrivetapp.tcl" >
+    <!ENTITY request_handler.tcl   SYSTEM "../rivet/default_request_handler.tcl" >
+    <!ENTITY intro.xml             SYSTEM "xml/intro.xml" >
+    <!ENTITY install.xml           SYSTEM "xml/installation.xml" >
+    <!ENTITY cmake.xml             SYSTEM "xml/cmake.xml" >
+    <!ENTITY directives.xml        SYSTEM "xml/directives.xml" >
+    <!ENTITY commands.xml          SYSTEM "xml/commands.xml" >
+    <!ENTITY examples.xml          SYSTEM "xml/examples.xml" >
+    <!ENTITY packages.xml          SYSTEM "xml/packages.xml" >
+    <!ENTITY dio.xml               SYSTEM "xml/dio.xml" >
+    <!ENTITY diodisplay.xml        SYSTEM "xml/diodisplay.xml" >
+    <!ENTITY session.xml           SYSTEM "xml/session.xml" >
+    <!ENTITY form.xml              SYSTEM "xml/form.xml" >
+    <!ENTITY calendar.xml          SYSTEM "xml/calendar.xml" >
+    <!ENTITY help.xml              SYSTEM "xml/help.xml" >
+    <!ENTITY internals.xml         SYSTEM "xml/internals.xml" >
+    <!ENTITY upgrade.xml           SYSTEM "xml-2/upgrade.xml" >
+    <!ENTITY request.xml           SYSTEM "xml/request.xml" >
+    <!ENTITY processing.xml        SYSTEM "xml/processing.xml" >
+    <!ENTITY entities.xml          SYSTEM "xml/entities.xml" >
+    <!ENTITY asciiglyphs.xml       SYSTEM "xml/asciiglyphs.xml" >
+    <!ENTITY lazybridge.xml        SYSTEM "xml/lazybridge.xml" >
+    <!ENTITY formbroker.xml        SYSTEM "xml/formbroker.xml" >
+    <!ENTITY version	           	  "3.1" >
+    <!ENTITY fullversion           "3.1.1" >
+    <!ENTITY version2-series	     "2.0,2.1,2.2,2.3" >
+    <!ENTITY version2-generic	     "2.x" >
+    <!ENTITY version30		        "3.0" >
+    <!ENTITY version31		        "3.1" >
+    <!ENTITY tcltk-url             "http://www.tcl.tk/" >
+    <!ENTITY apache-url            "http://httpd.apache.org" >
+    <!ENTITY apache-apr            "http://apr.apache.org/" >
+    <!ENTITY apache-apreq          "http://httpd.apache.org/apreq/" >
+    <!ENTITY rivet-download        "http://tcl.apache.org/rivet/html/download.html" >
+    <!ENTITY apachedoc-vhost       "https://httpd.apache.org/docs/2.4/vhosts" >
+    <!ENTITY apachedoc-mpm	        "https://httpd.apache.org/docs/2.4/mpm.html" >
+    <!ENTITY apachedoc-prefork	  "https://httpd.apache.org/docs/2.4/mod/prefork.html" >
+    <!ENTITY apachedoc-worker	     "https://httpd.apache.org/docs/2.4/mod/worker.html" >
+    <!ENTITY apachedoc-event	     "https://httpd.apache.org/docs/2.4/mod/event.html" >
+    <!ENTITY apachedoc-winnt	     "https://httpd.apache.org/docs/2.4/mod/mpm_winnt.html" >
+    <!ENTITY apachedoc-docroot     "https://httpd.apache.org/docs/2.4/mod/core.html#documentroot" >
+    <!ENTITY apachedoc-alias	     "https://httpd.apache.org/docs/2.4/mod/mod_alias.html" >
+    <!ENTITY apachedoc-rewrite     "https://httpd.apache.org/docs/2.4/mod/mod_rewrite.html" >
+    <!ENTITY apachedoc-perftuning  "https://httpd.apache.org/docs/2.4/misc/perf-tuning.html" >
+]>
+
+<!--
+	Copyright 2002-2019 The Apache Tcl Team
+
+	Licensed under the Apache License, Version 2.0 (the "License");
+	you may not use this file except in compliance with the License.
+	You may obtain a copy of the License at
+
+	    http://www.apache.org/licenses/LICENSE-2.0
+
+	Unless required by applicable law or agreed to in writing, software
+	distributed under the License is distributed on an "AS IS" BASIS,
+	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	See the License for the specific language governing permissions and
+	limitations under the License.
+-->
+
+<article>
+  	<articleinfo>
+    	<title>Apache Rivet &version;</title>
+    	<copyright>
+        	<year>2002-<?dbtimestamp format="Y" ?></year>
+        	<holder>Apache Software Foundation</holder>
+    	</copyright>
+    	<author>
+        <firstname>The Rivet Team</firstname>
+        <affiliation>
+	        <orgname>The Apache Software Foundation</orgname>
+	        <address>
+	            <email>rivet-dev@tcl.apache.org</email>
+	        </address>
+        </affiliation>
+    	</author>
+  	</articleinfo>
+
+  	<para>
+    	This manual is released as part of Apache/Rivet &fullversion; (<?dbtimestamp format="A Y-m-d X" ?>).
+  	</para>
+
+	<!-- Introduction -->
+   &intro.xml;
+
+    <!-- Installation -->
+   &install.xml;
+   &cmake.xml;
+ 
+    <!-- Directives -->
+   &directives.xml;
+
+    <!-- Request Processing -->
+   &processing.xml;
+   &request.xml;
+
+    <!-- Commands -->
+    &commands.xml;
+
+    <!-- examples-sgml -->
+   &examples.xml;
+
+    <!-- Packages -->
+   &packages.xml;
+
+    <!-- Database I/O -->
+   &dio.xml;
+
+    <!-- Database I/O Display -->
+   &diodisplay.xml;
+
+    <!-- Sessions -->
+   &session.xml;
+
+   <!-- Form -->
+   &form.xml;
+
+   <!-- Calendar -->
+   &calendar.xml;
+
+   <!-- Entities -->
+   &entities.xml;
+    
+   <!-- AsciiGlyphs -->
+	&asciiglyphs.xml; 
+
+	<!-- FormBroker -->
+	&formbroker.xml;
+
+   <!-- Help -->
+   &help.xml;
+
+   <!-- Internals -->
+   &internals.xml;
+
+	<!-- lazybridge -->
+	&lazybridge.xml;
+
+   <!-- Upgrade -->
+   <!-- &upgrade.xml; -->
+   
+</article>

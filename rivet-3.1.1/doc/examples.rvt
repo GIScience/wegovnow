@@ -1,0 +1,234 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3.0//EN">
+<html>
+<!-- $Id$ -->
+<title>Rivet examples</title>
+<body bgcolor=white>
+
+<table bgcolor=black width=100%>
+<tr>
+<td align=center>
+<font size=40 color=#ffffff>
+<b>Rivet examples</b>
+</font>
+</td>
+</tr>
+</table>
+
+<p>
+These are some examples, rather limited ones, of what can be done with Rivet.
+
+<p>
+<table>
+<tr><td><hr><b>Hello world</b></td></tr>
+<tr><td bgcolor=gray><pre>
+
+&lt;?
+cookie "foo" "bar" # we have to put this before any 'puts' statements
+
+puts "Hello world"
+?&gt;
+
+</pre>
+	  </td></tr>
+
+<tr><td>
+Produces:
+<p>
+
+<?
+headers setcookie "foo" "bar"
+
+puts "hello world" 
+?>
+
+<p>
+
+
+</td></tr>
+
+<tr><td><hr>
+<b>Conditionals:</b>
+</td></tr>
+
+<tr><td bgcolor=gray><pre>
+
+&lt;? if { 1 } { ?&gt;
+
+&lt;h2&gt; True &lt;/h2&gt;
+
+&lt;? }  ?&gt;
+
+</td></tr></pre>
+
+<tr><td>
+Produces:
+<p>
+
+<? if { 1 } { ?>
+
+<h2> True </h2>
+
+<? } ?>
+</td></tr>
+
+<tr><td><hr><b>Loops:</b>
+</td></tr>
+
+<tr><td bgcolor=gray><pre>
+
+&lt;? 
+set x 0 
+while { $x &lt; 5 } { 
+ puts "\$x = $x&lt;br>"
+ incr x
+?&gt;
+
+LOOP&lt;br>
+
+&lt;? }  ?&gt;
+
+</pre>
+</td></tr>
+
+<tr><td>Produces:<p>
+<?
+set x 0
+while { $x < 5 } { 
+ puts "\$x = $x<br>"
+ incr x
+?>
+LOOP<BR>
+<? } ?>
+</td></tr>
+
+<tr><td><hr><b>Variables (environmental as well as those passed to the script)</b><p>
+</td></tr>
+<tr><td bgcolor=gray><pre>
+
+&lt;? 
+ hgetvars
+if { [ array exists VARS ] } {
+    puts "&lt; ul>"
+    foreach { vr } [ array names VARS ]  {
+        puts "&lt;li>(VARS) $vr = $VARS($vr)"
+    }
+    puts "&lt;/ul>"
+}
+
+if { [ array exists ENVS ] } {
+    
+    puts "&lt;ul>"
+    foreach { vr } [ array names ENVS ]  {
+        puts "&lt;li>(ENVS) $vr = $ENVS($vr)"
+    }
+    puts "&lt;/ul>"
+}
+
+if { [ array exists COOKIES ] } {
+    
+    puts "&lt;ul>"
+    foreach { vr } [ array names COOKIES ]  {
+        puts "&lt;li>(COOKIES) $vr = $COOKIES($vr)"
+    }
+    puts "&lt;/ul>"
+}
+
+?&gt;
+
+</pre>
+</td></tr>
+
+<tr><td>Produces:<p>
+<?
+hgetvars
+if { [ array exists VARS ] } {
+    puts "<ul>"
+    foreach { vr } [ array names VARS ]  {
+        puts "<li>(VARS) $vr = $VARS($vr)"
+    }
+    puts "</ul>"
+}
+
+if { [ array exists ENVS ] } {
+    puts "<ul>"
+    foreach { vr } [ array names ENVS ]  {
+        puts "<li>(ENVS) $vr = $ENVS($vr)"
+    }
+    puts "</ul>"
+}
+
+if { [ array exists COOKIES ] } {
+    
+    puts "<ul>"
+    foreach { vr } [ array names COOKIES ]  {
+        puts "<li>(COOKIES) $vr = $COOKIES($vr)"
+    }
+    puts "</ul>"
+}
+
+?>
+</td></tr>
+
+<tr><td><hr><b>Create a table on the fly</b><p>
+</td></tr>
+<tr><td bgcolor=gray><pre>
+
+&lt;?
+set i 1
+puts "&lt;table&gt;\n"
+
+while { $i &lt;= 8 } {
+    puts "&lt;tr&gt;\n"
+    for {set j 1} {$j &lt;= 8} {incr j} {
+	set num [ expr $i * $j * 4 - 1]
+	puts [ format "&lt;td bgcolor=%2x%2x%2x &gt; $num $num $num &lt;/td&gt;\n" $num $num $num ]
+    }
+    incr i
+    puts "&lt;/tr&gt;\n"
+}
+
+puts "&lt;/table&gt;\n"
+?&gt;
+</pre>
+</td></tr>
+
+<tr><td>Produces:<p>
+<?
+set i 1
+puts "<table>\n"
+
+while { $i <= 8 } {
+    puts "<tr>\n"
+    for {set j 1} {$j <= 8} {incr j} {
+	set num [ expr {$i * $j * 4 - 1} ]
+	puts [ format "<td bgcolor=%2x%2x%2x > $num $num $num </td>\n" $num $num $num ]
+    }
+    incr i
+    puts "</tr>\n"
+}
+
+puts "</table>\n"
+?>
+</td></tr>
+
+<tr><td><hr> <b>In addition</b><br> 
+
+There are many, many other things you can do with Rivet.  You can,
+if everything is compiled right, load tcl modules, like libpgtcl.so
+(the Postgresql interface), so that you can interact with a database!
+
+<p>
+
+</td></tr>
+
+</table>
+
+<? rivet_info ?>
+
+
+<p>
+<a href="http://tcl.apache.org/rivet/">Return to the Rivet homepage</a>
+</p>
+
+</body>
+</html>

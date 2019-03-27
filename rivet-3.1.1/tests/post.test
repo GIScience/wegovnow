@@ -1,0 +1,62 @@
+# $Id$
+
+set testfilename1 post.rvt
+
+::tcltest::test postvariables-1.1 {POST variables} {
+    set page [ ::http::geturl "${urlbase}$testfilename1" -query foobar=goober ]
+    regexp -line {^\[::rivet::var get foobar\] = goober$} [ ::http::data $page ] match
+    set match
+} {[::rivet::var get foobar] = goober}
+
+::tcltest::test postvariables-2.1 {POST variables + I18N} {
+    set page [ ::http::geturl "${urlbase}$testfilename1" -query Más=Tú ]
+    regexp -line {^\[::rivet::var get Más\] = Tú$} [ ::http::data $page ] match
+    set match
+} {[::rivet::var get Más] = Tú}
+
+::tcltest::test postvariables-2.2 {POST variables + I18N + encoding} {
+    set page [ ::http::geturl "${urlbase}$testfilename1" -query [ ::http::formatQuery Más Tú ] ]
+    regexp -line {^\[::rivet::var get Más\] = Tú$} [ ::http::data $page ] match
+    set match
+} {[::rivet::var get Más] = Tú}
+
+::tcltest::test postvariables-3.1 {POST multi-value variable} {
+    set page [ ::http::geturl "${urlbase}get.rvt" -query [::http::formatQuery lstvar1 a lstvar1 b lstvar1 {c d}]]
+    regexp -line {\[::rivet::var get lstvar1\] = a b c d$} [ ::http::data $page ] match
+    set match
+} {[::rivet::var get lstvar1] = a b c d}
+
+::tcltest::test postvariables-3.2 {POST multi-value variable as list} {
+    set page [ ::http::geturl "${urlbase}get.rvt" -query [::http::formatQuery lstvar2 a lstvar2 b lstvar2 {c d}]]
+    regexp -line {\[::rivet::var list lstvar2\] = a b {c d}$} [ ::http::data $page ] match
+    set match
+} {[::rivet::var list lstvar2] = a b {c d}}
+
+::tcltest::test postvariables-4.1 {var_post} {
+    set page [ ::http::geturl "${urlbase}$testfilename1" -query foobar=goober ]
+    regexp -line {^\[::rivet::var_post get foobar\] = goober$} [ ::http::data $page ] match
+    set match
+} {[::rivet::var_post get foobar] = goober}
+
+set rivetscript "${urlbase}fqrivet_var.tcl"
+
+::tcltest::test postvariables-5.1 {::rivet::var_qs and ::rivet::var_post} {
+    set page [::http::geturl "${rivetscript}?qsarg1=val1&qsarg2=val2&t1=1" \
+                            -query [::http::formatQuery postarg1 val1 postarg2 val2]]
+    set match [::http::data $page]
+    set match
+} {var_qs = qsarg1 val1 qsarg2 val2
+var_post = postarg1 val1 postarg2 val2}
+
+::tcltest::test postvariables-5.2 {::rivet::var_post and ::rivet::var_qs crosstalk 1} {
+    set page [::http::geturl "${rivetscript}?qsarg1=val1&qsarg2=val2&t1=2"]
+    set match [::http::data $page]
+    set match
+} {OK}
+
+::tcltest::test postvariables-5.3 {::rivet::var_post and ::rivet::var_qs crosstalk 2} {
+    set page [::http::geturl "${rivetscript}?t1=3" \
+                              -query [::http::formatQuery postarg1 val1 postarg2 val2]]
+    set match [::http::data $page]
+    set match
+} {OK}

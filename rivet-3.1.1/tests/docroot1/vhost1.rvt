@@ -1,0 +1,13 @@
+<?
+if {[info exists ::childinit1]} {
+    puts "vhost1 hello world<br>"
+	puts "::childinit1 exists<br>"
+
+} elseif {[info exists ::beforescript1]} {
+    ?>Virtual Host1 Test<?
+} 
+if {[info exists ::childinit2]} {
+	puts "::childinit2 exists<br>"
+
+}
+?>

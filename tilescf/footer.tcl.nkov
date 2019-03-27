@@ -1,0 +1,14 @@
+<==
+if {$tail eq {libtiles.tcl}} {
+    set file_data [regsub -all {(    #        col    x tile coordinate,)} $file_data {    #   ( col - may contain a list of "col row zl",
+    #     in this case, next row and zl arguments
+    #     must equal -1                             )
+\1}]
+    set file_data [regsub -all {(\{col row zl[^\n]*)} $file_data {\1
+	if {$row eq -1} {
+	    lassign $col col row zl
+	}}]
+    set file_data [regsub -all {\{col row zl} $file_data "\{col \{row -1\} \{zl -1\}"]
+}
+set _ {}
+==>

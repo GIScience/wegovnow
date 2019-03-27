@@ -1,0 +1,604 @@
+<!DOCTYPE HTML>
+<html lang='en'>
+<head>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'/>
+  <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+  <title>WeGovNow - GSDR - San Dona Instance </title>
+  <link rel='stylesheet' type='text/css' href='main.css'>
+  <link rel='stylesheet' href='ol.css'>
+  <script src='rainbowvis.js'></script>  
+  <script src='ol-debug.js'></script>
+  <script src='jquery-3.2.1.min.js'></script>
+  <script src='gsdrlib.js'></script>
+  <script src='xxhash.min.js'></script>
+
+</head>
+<body style="margin:20px;padding:20px" onload='gsdrwm();'>
+<h1>Geo-Spatial Data Repository of WeGovNow - San Dona di Piave Instance:: Documentation</h1>
+<p>This web-page provides GSDR API's Documentation and Examples of usage.</p>
+<h3>Table of Contents</h3>
+<ul>
+<li><a href="#api">API description</a></li>
+<li><a href="#basic_examples">Basic Examples</a></li>
+<li><a href="#quality_examples">Quality Examples</a>
+  <ul>
+    <li><a href="#spelling_autocomplete">Spelling check and autocomplete</a></li>
+    <li><a href="#get_geodata">Obtaining geodata</a></li>
+    <li><a href="#client_snap">Client-side snap functionality for digitizing</a></li>
+  </ul>
+</li>
+</ul>
+
+<h2 id="api">API description</h2>
+
+<h3>Syntax</h3>
+
+<h4>Keys</h4>
+
+FROM AND OR NOT IN AS BETWEEN JOIN ON LIKE LIMIT SELECT WHERE HAVING GROUP__s__BY ORDER__s__BY SELECT__s__DISTINCT DESC ASC CASE WHEN THEN ELSE END
+
+<code>
+  <pre>
+__s__  =  ' ' space  
+___    =  '('
+__v__  =  ''
+__e__  =  '='
+__ne__ =  '!='
+__l__  =  '<'
+__g__  =  '>'
+__le__ =  '<='
+__ge__  =  '>='
+__a__  =  '+'
+__r__  =  '-'
+__m__  =  '*'
+__d__  =  '/'
+  </pre>  
+</code>
+
+<h4>Values</h4>
+<code>
+  <pre>
+___  =  ")" three underscore symbols
+__s__  =  " " space
+__p__  =  "%"
+__c__  =  ","
+__q__  =  "'"
+__r__  =  "-"
+__m__  =  "*"
+  </pre>
+</code>
+
+<h4>Functions</h4>
+<h3><a href="https://sqlite.org/lang_corefunc.html">SQLite core functions</a></h3>
+<p>abs char coalesce glob hex ifnull instr last_insert_rowid length like lower ltrim ltrim max min nullif printf quote random randomblob replace round rtrim soundex sqlite_version substr trim typeof unicode unlikely upper zeroblob</p>
+<h3><a href="https://sqlite.org/lang_aggfunc.html">SQLite Aggregate Functions</a></h3>
+<p>avg count count group_concat max min sum total</p>
+<h3><a href="https://www.sqlite.org/contrib/download/extension-functions.c?get=25">SQLite extension-functions.c</a></h3>
+<p>atan2 acosh asinh atanh difference cosh sinh tanh coth power square ceil floor replicate charindex leftstr rightstr ltrim rtrim trim replace reverse proper padl padr padc strfilter stdev variance mode median lower_quartile upper_quartile
+
+  <h3><a href="http://www.gaia-gis.it/gaia-sins/spatialite-sql-4.2.0.html">SpatiaLite functions reference list</a></h3>
+<p> spatialite_version freexl_version proj4_version geos_version lwgeom_version libxml2_version HasIconv HasMathSQL HasGeoCallbacks HasProj HasGeos HasGeosAdvanced HasGeosTrunk HasGeosReentrant HasGeosOnlyReentrant HasLwGeom HasLibXML2 HasEpsg HasFreeXL HasGeoPackage HasGCP HasTopology CastToInteger CastToDouble CastToText CastToBlob ForceAsNull CreateUUID MD5Checksum MD5TotalChecksum EncodeURL DecodeURL FileExtFromPath GetGpkgMode GetGpkgAmphibiousMode GetDecimalPrecision Abs Acos Asin Atan Atan2 Ceil Cos Cot Degrees Exp Floor Ln Log Log2 Log10 PI Pow Radians Sign Sin Sqrt Stddev_pop Stddev_samp Tan Var_pop Var_samp CvtToKm CvtToDm CvtToCm CvtToMm CvtToKmi CvtToIn CvtToFt CvtToYd CvtToMi CvtToFath CvtToCh CvtToLink CvtToUsIn CvtToUsFt CvtToUsYd CvtToUsMi CvtToUsCh CvtToIndFt CvtToIndYd CvtToIndCh LongLatToDMS LongitudeFromDMS IsZipBlob IsPdfBlob IsGifBlob IsPngBlob IsTiffBlob IsJpegBlob IsExifBlob IsExifGpsBlob IsWebpBlob IsJP2Blob GetMimeType BlobFromFile BlobToFile ST_Point MakePoint MakePointZ MakePointM MakePointZM MakeLine MakeLine MakeLine MakeCircle MakeEllipse MakeArc MakeEllipticArc MakeCircularSector MakeEllipticSector MakeCircularStripe SquareGrid TriangularGrid HexagonalGrid BuildMbr BuildCircleMbr Extent ToGARS GARSMbr MbrMinX MbrMinY MbrMaxX MbrMaxY ST_MinZ ST_MaxZ ST_MinM ST_MaxM GeomFromText ST_WKTToSQL PointFromText LineFromText PolyFromText MPointFromText MLineFromText MPolyFromText GeomCollFromText BdPolyFromText BdMPolyFromText GeomFromWKB ST_WKBToSQL PointFromWKB LineFromWKB PolyFromWKB MPointFromWKB MLineFromWKB MPolyFromWKB GeomCollFromWKB BdPolyFromWKB BdMPolyFromWKB AsText AsWKT AsBinary AsSVG AsKml GeomFromKml AsGml GeomFromGML AsGeoJSON GeomFromGeoJSON AsEWKB GeomFromEWKB AsEWKT GeomFromEWKT AsFGF GeomFromFGF Dimension CoordDimension ST_NDims ST_Is3D ST_IsMeasured GeometryType SRID SetSRID IsEmpty IsSimple IsValid IsValidReason IsValidDetail Boundary Envelope ST_Expand ST_NPoints ST_NRings ST_Reverse ST_ForceLHR CastToPoint CastToLinestring CastToPolygon CastToMultiPoint CastToMultiLinestring CastToMultiPolygon CastToGeometryCollection CastToMulti CastToSingle CastToXY CastToXYZ CastToXYM CastToXYZM X Y Z M StartPoint EndPoint GLength Perimeter GeodesicLength GreatCircleLength IsClosed IsRing PointOnSurface Simplify SimplifyPreserveTopology NumPoints PointN AddPoint SetPoint SetStartPoint SetEndPoint RemovePoint Centroid Area ExteriorRing NumInteriorRing InteriorRingN NumGeometries GeometryN MbrEqual MbrDisjoint MbrTouches MbrWithin MbrOverlaps MbrIntersects ST_EnvIntersects MbrContains Equals Disjoint Touches Within Overlaps Crosses Intersects Contains Covers CoveredBy Relate Distance PtDistWithin Intersection Difference GUnion GUnion SymDifference Buffer ConvexHull HausdorffDistance OffsetCurve SingleSidedBuffer SharedPaths Line_Interpolate_Point Line_Interpolate_Equidistant_Points Line_Locate_Point Line_Substring ClosestPoint ShortestLine Snap Collect LineMerge BuildArea Polygonize MakePolygon UnaryUnion DissolveSegments DissolvePoints LinesFromRings LinesCutAtNodes RingsCutAtNodes CollectionExtract ExtractMultiPoint ExtractMultiLinestring ExtractMultiPolygon ST_Locate_Along_Measure ST_Locate_Between_Measures DelaunayTriangulation VoronojDiagram ConcaveHull MakeValid MakeValidDiscarded Segmentize Split SplitLeft SplitRight Azimuth Project SnapToGrid GeoHash AsX3D MaxDistance ST_3DDistance ST_3DMaxDistance ST_3dLength ST_Node SelfIntersections Transform SridFromAuthCRS ShiftCoords ST_Translate ST_Shift_Longitude NormalizeLonLat ScaleCoords RotateCoords ReflectCoords SwapCoords ATM_Create ATM_CreateTranslate ATM_CreateScale ATM_CreateRotate ATM_CreateXRoll ATM_CreateYRoll ATM_Multiply ATM_Translate ATM_Scale ATM_Rotate ATM_XRoll ATM_YRoll ATM_Determinant ATM_IsInvertible ATM_Invert ATM_IsValid ATM_AsText ATM_Transform GCP_Compute GCP_IsValid GCP_AsText GCP2ATM GCP_Transform SridIsGeographic SridIsProjected SridHasFlippedAxes SridGetSpheroid SridGetPrimeMeridian SridGetDatum SridGetUnit SridGetProjection SridGetAxis_1_Name SridGetAxis_1_Orientation SridGetAxis_2_Name SridGetAxis_2_Orientation</p>
+<h3><a href="http://tiles.cf">Tiles Common Framework Functions</a></h3>
+<p>tile2quadkey quadkey2tile tile2geo geo2tile getPixelSize getEpsilon tile2geom isIn isTouch polygonTileIntersect getTilesOfPolygon</p>
+<h3>Custom functions</h3>
+<p><a href="http://wiki.tcl.tk/3070">levenshteinDistance</a></p>
+<h2 id="basic_examples">Basic Interactive Examples</h2>
+<h3>Simple request (1)</h3><p>Returns 1</p><p><input id='simple_request_(1)' type='text' value='api.tcl?SELECT=1' style='width:80%' /><button type='button' onclick='var data = getTEXT(document.getElementById("simple_request_(1)").value+"&SQL");alert(data)'>SQL</button><button type='button' onclick='var data = getTEXT(document.getElementById("simple_request_(1)").value);alert(data)'>Result</button></p>
+<h3>Simple request (1 2 3)</h3><p>Select several values</p><p><input id='simple_request_(1_2_3)' type='text' value='api.tcl?SELECT=1,2,3' style='width:80%' /><button type='button' onclick='var data = getTEXT(document.getElementById("simple_request_(1_2_3)").value+"&SQL");alert(data)'>SQL</button><button type='button' onclick='var data = getTEXT(document.getElementById("simple_request_(1_2_3)").value);alert(data)'>Result</button></p>
+<h3>Using AS and Special Processing of id</h3><p>Combining SQL clause (AS in the example). Special processing of id name (see the result).</p><p><input id='using_as_and_special_processing_of_id' type='text' value='api.tcl?SELECT=1&AS=id,2,3' style='width:80%' /><button type='button' onclick='var data = getTEXT(document.getElementById("using_as_and_special_processing_of_id").value+"&SQL");alert(data)'>SQL</button><button type='button' onclick='var data = getTEXT(document.getElementById("using_as_and_special_processing_of_id").value);alert(data)'>Result</button></p>
+<h3>Using of SQL functions</h3><p>Returns number of elements in the table</p><p><input id='using_of_sql_functions' type='text' value='api.tcl?SELECT=__count,id,___&FROM=elements' style='width:80%' /><button type='button' onclick='var data = getTEXT(document.getElementById("using_of_sql_functions").value+"&SQL");alert(data)'>SQL</button><button type='button' onclick='var data = getTEXT(document.getElementById("using_of_sql_functions").value);alert(data)'>Result</button></p>
+<h3>Math equation</h3><p></p><p><input id='math_equation' type='text' value='api.tcl?SELECT=__Sqrt,__count,id,___&__m__=100.5&__a__=300,___&FROM=elements' style='width:80%' /><button type='button' onclick='var data = getTEXT(document.getElementById("math_equation").value+"&SQL");alert(data)'>SQL</button><button type='button' onclick='var data = getTEXT(document.getElementById("math_equation").value);alert(data)'>Result</button></p>
+<h3>Constructing of GeoJSON data and tile-based requests</h3><p>Special processing of the AsGeoJSON function</p><p><input id='constructing_of_geojson_data_and_tile-based_requests' type='text' value='api.tcl?SELECT=elements.id&AS=id,__AsGeoJSON,geom,___,datasrc,__group_concat,__printf,__q____p__s__r____p__s__q__,keys.txt,vals.txt,___,___&AS=data&FROM=elements&JOIN=eltile&ON=element&__e__=elements.id&JOIN=tiles&ON=tiles.rowid&__e__=eltile.tile&JOIN=tags&ON=tags.id&__e__=elements.id&JOIN=keys&ON=keys.rowid&__e__=tags.key&JOIN=vals&ON=vals.rowid&__e__=tags.val&WHERE=tiles.col&__e__=280444&AND=tiles.row&__e__=187294&GROUP__s__BY=elements.id' style='width:80%' /><button type='button' onclick='var data = getTEXT(document.getElementById("constructing_of_geojson_data_and_tile-based_requests").value+"&SQL");alert(data)'>SQL</button><button type='button' onclick='var data = getTEXT(document.getElementById("constructing_of_geojson_data_and_tile-based_requests").value);alert(data)'>Result</button></p>
+
+<h2 id="quality_examples">Interactive Examples - Quick Quality Assessment</h2>
+<h3 id="spelling_autocomplete">Text input improvement - Spelling check and autocomplete.</h3>
+<h4>Complete Text Input Keys</h4><p>The following SQL request allows implementing autocomplete functionality based on keys frequency. </p><p>URL: <code>api.tcl?SELECT=txt,__count,txt,___&FROM=elements&JOIN=tags&ON=elements.id&__e__=tags.id&JOIN=keys&ON=keys.rowid&__e__=tags.key&WHERE=datasrc&__e__=__q__OSM.CUR.SD__q__&AND=txt&LIKE=__q__<strong>YourString</strong>__p____q__&GROUP__s__BY=txt&ORDER__s__BY=__count,txt,___&DESC&LIMIT=5</code></p><p><input id='complete_text_input_keys' type='text' value='bui' style='width:80%' /><button type='button' onclick='var data = getTEXT("api.tcl?SELECT=txt,__count,txt,___&FROM=elements&JOIN=tags&ON=elements.id&__e__=tags.id&JOIN=keys&ON=keys.rowid&__e__=tags.key&WHERE=datasrc&__e__=__q__OSM.CUR.SD__q__&AND=txt&LIKE=__q__"+document.getElementById("complete_text_input_keys").value+"__p____q__&GROUP__s__BY=txt&ORDER__s__BY=__count,txt,___&DESC&LIMIT=5"+"&SQL");alert(data)'>SQL</button><button type='button' onclick='var data = getTEXT("api.tcl?SELECT=txt,__count,txt,___&FROM=elements&JOIN=tags&ON=elements.id&__e__=tags.id&JOIN=keys&ON=keys.rowid&__e__=tags.key&WHERE=datasrc&__e__=__q__OSM.CUR.SD__q__&AND=txt&LIKE=__q__"+document.getElementById("complete_text_input_keys").value+"__p____q__&GROUP__s__BY=txt&ORDER__s__BY=__count,txt,___&DESC&LIMIT=5");alert(data)'>Result</button></p>
+<h4>Complete Text Input Vals</h4><p>The following SQL request allows to implement autocomplete functionality based on values frequency. </p><p>URL: <code>api.tcl?SELECT=txt,__count,txt,___&FROM=elements&JOIN=tags&ON=elements.id&__e__=tags.id&JOIN=vals&ON=vals.rowid&__e__=tags.val&WHERE=datasrc&__e__=__q__OSM.CUR.SD__q__&AND=txt&LIKE=__q__<strong>YourString</strong>__p____q__&GROUP__s__BY=txt&ORDER__s__BY=__count,txt,___&DESC&LIMIT=5</code></p><p><input id='complete_text_input_vals' type='text' value='san' style='width:80%' /><button type='button' onclick='var data = getTEXT("api.tcl?SELECT=txt,__count,txt,___&FROM=elements&JOIN=tags&ON=elements.id&__e__=tags.id&JOIN=vals&ON=vals.rowid&__e__=tags.val&WHERE=datasrc&__e__=__q__OSM.CUR.SD__q__&AND=txt&LIKE=__q__"+document.getElementById("complete_text_input_vals").value+"__p____q__&GROUP__s__BY=txt&ORDER__s__BY=__count,txt,___&DESC&LIMIT=5"+"&SQL");alert(data)'>SQL</button><button type='button' onclick='var data = getTEXT("api.tcl?SELECT=txt,__count,txt,___&FROM=elements&JOIN=tags&ON=elements.id&__e__=tags.id&JOIN=vals&ON=vals.rowid&__e__=tags.val&WHERE=datasrc&__e__=__q__OSM.CUR.SD__q__&AND=txt&LIKE=__q__"+document.getElementById("complete_text_input_vals").value+"__p____q__&GROUP__s__BY=txt&ORDER__s__BY=__count,txt,___&DESC&LIMIT=5");alert(data)'>Result</button></p>
+<h4>Find Similar Values by Levenshtein Distance</h4><p> </p><p>URL: <code>api.tcl?SELECT=txt&FROM&___&SELECT__s__DISTINCT=txt&FROM=elements&JOIN=eltile&ON=element&__e__=elements.id&JOIN=tiles&ON=tiles.rowid&__e__=eltile.tile&JOIN=tags&ON=tags.id&__e__=elements.id&JOIN=vals&ON=vals.rowid&__e__=tags.val&WHERE=tiles.col&__e__=280444&AND=tiles.row&__e__=187294,___&ORDER__s__BY=__levenshteinDistance,txt,__q__<strong>YourString</strong>__q__,___&LIMIT=1</code></p><p><input id='find_similar_values_by_levenshtein_distance' type='text' value='sandonadepiave' style='width:80%' /><button type='button' onclick='var data = getTEXT("api.tcl?SELECT=txt&FROM&___&SELECT__s__DISTINCT=txt&FROM=elements&JOIN=eltile&ON=element&__e__=elements.id&JOIN=tiles&ON=tiles.rowid&__e__=eltile.tile&JOIN=tags&ON=tags.id&__e__=elements.id&JOIN=vals&ON=vals.rowid&__e__=tags.val&WHERE=tiles.col&__e__=280444&AND=tiles.row&__e__=187294,___&ORDER__s__BY=__levenshteinDistance,txt,__q__"+document.getElementById("find_similar_values_by_levenshtein_distance").value+"__q__,___&LIMIT=1"+"&SQL");alert(data)'>SQL</button><button type='button' onclick='var data = getTEXT("api.tcl?SELECT=txt&FROM&___&SELECT__s__DISTINCT=txt&FROM=elements&JOIN=eltile&ON=element&__e__=elements.id&JOIN=tiles&ON=tiles.rowid&__e__=eltile.tile&JOIN=tags&ON=tags.id&__e__=elements.id&JOIN=vals&ON=vals.rowid&__e__=tags.val&WHERE=tiles.col&__e__=280444&AND=tiles.row&__e__=187294,___&ORDER__s__BY=__levenshteinDistance,txt,__q__"+document.getElementById("find_similar_values_by_levenshtein_distance").value+"__q__,___&LIMIT=1");alert(data)'>Result</button></p>
+
+
+<h3 id="text_boxes">Interactive Text Boxes Using OpenStreetMap for San Donà di Piave</h3>
+<script>
+  function selectString(val,searchbox,suggestionbox) {
+  $(searchbox).val(val);
+  $(suggestionbox).hide();
+  }
+
+</script>
+<h4>Complete Text Input Keys</h4><p>The following implements autocomplete functionality based on keys frequency. </p><p>URL: <code>api.tcl?SELECT=txt,__count,txt,___&FROM=elements&JOIN=tags&ON=elements.id&__e__=tags.id&JOIN=keys&ON=keys.rowid&__e__=tags.key&WHERE=elements.datasrc&__e__=__q__OSM.CUR.SD__q__&AND=txt&LIKE=__q__<strong>YourString</strong>__p____q__&GROUP__s__BY=txt&ORDER__s__BY=__count,txt,___&DESC&LIMIT=5</code></p>
+<div class='frmSearch'>
+  <input type='text' id='search-box-complete_text_input_keys' placeholder='complete_text_input_keys' value='bui'/>
+  <div class='compbox' id='suggesstion-box-complete_text_input_keys'></div>
+</div>
+<script>
+  $(document).ready(function(){
+  $('#search-box-complete_text_input_keys').keyup(function(){
+  $.ajax({
+  url: 'api.tcl?SELECT=txt,__count,txt,___&FROM=elements&JOIN=tags&ON=elements.id&__e__=tags.id&JOIN=keys&ON=keys.rowid&__e__=tags.key&WHERE=elements.datasrc&__e__=__q__OSM.CUR.SD__q__&AND=txt&LIKE=__q__'+$(this).val()+'__p____q__&GROUP__s__BY=txt&ORDER__s__BY=__count,txt,___&DESC&LIMIT=5',
+  type: 'GET',
+  beforeSend: function(){
+  $('#search-box-complete_text_input_keys').css('background','#FFF url(media/img/loading.gif) no-repeat 165px');
+  },
+  success: function(data){
+  curdata=data;
+  uldata = '<ul>';
+    data.features.forEach(function(element) {
+    uldata = uldata + '<li onClick="selectString(\''+element.properties.txt+'\',\'#search-box-complete_text_input_keys\',\'#suggesstion-box-complete_text_input_keys\')">'+element.properties.txt+'</li>';
+    });
+    uldata = uldata + '</ul>';
+  $('#suggesstion-box-complete_text_input_keys').show();
+  $('#suggesstion-box-complete_text_input_keys').html(uldata);
+  $('#search-box-complete_text_input_keys').css('background','#FFF');
+  }
+  });
+  });
+  });
+</script>
+<h4>Complete Text Input Vals</h4><p>The following implements autocomplete functionality based on values frequency. </p><p>URL: <code>api.tcl?SELECT=txt,__count,txt,___&FROM=elements&JOIN=tags&ON=elements.id&__e__=tags.id&JOIN=vals&ON=vals.rowid&__e__=tags.val&WHERE=elements.datasrc&__e__=__q__OSM.CUR.SD__q__&AND=txt&LIKE=__q__<strong>YourString</strong>__p____q__&GROUP__s__BY=txt&ORDER__s__BY=__count,txt,___&DESC&LIMIT=5</code></p>
+<div class='frmSearch'>
+  <input type='text' id='search-box-complete_text_input_vals' placeholder='complete_text_input_vals' value='san'/>
+  <div class='compbox' id='suggesstion-box-complete_text_input_vals'></div>
+</div>
+<script>
+  $(document).ready(function(){
+  $('#search-box-complete_text_input_vals').keyup(function(){
+  $.ajax({
+  url: 'api.tcl?SELECT=txt,__count,txt,___&FROM=elements&JOIN=tags&ON=elements.id&__e__=tags.id&JOIN=vals&ON=vals.rowid&__e__=tags.val&WHERE=elements.datasrc&__e__=__q__OSM.CUR.SD__q__&AND=txt&LIKE=__q__'+$(this).val()+'__p____q__&GROUP__s__BY=txt&ORDER__s__BY=__count,txt,___&DESC&LIMIT=5',
+  type: 'GET',
+  beforeSend: function(){
+  $('#search-box-complete_text_input_vals').css('background','#FFF url(media/img/loading.gif) no-repeat 165px');
+  },
+  success: function(data){
+  curdata=data;
+  uldata = '<ul>';
+    data.features.forEach(function(element) {
+    uldata = uldata + '<li onClick="selectString(\''+element.properties.txt+'\',\'#search-box-complete_text_input_vals\',\'#suggesstion-box-complete_text_input_vals\')">'+element.properties.txt+'</li>';
+    });
+    uldata = uldata + '</ul>';
+  $('#suggesstion-box-complete_text_input_vals').show();
+  $('#suggesstion-box-complete_text_input_vals').html(uldata);
+  $('#search-box-complete_text_input_vals').css('background','#FFF');
+  }
+  });
+  });
+  });
+</script>
+<h4>Find Similar Values by Levenshtein Distance</h4><p> </p><p>URL: <code>api.tcl?SELECT=txt&FROM&___&SELECT__s__DISTINCT=txt&FROM=elements&JOIN=eltile&ON=element&__e__=elements.id&JOIN=tiles&ON=tiles.rowid&__e__=eltile.tile&JOIN=tags&ON=tags.id&__e__=elements.id&JOIN=vals&ON=vals.rowid&__e__=tags.val&WHERE=tiles.col&__e__=280444&AND=tiles.row&__e__=187294&AND=elements.datasrc&LIKE=__q__OSM.CUR.SD__q__,___&ORDER__s__BY=__levenshteinDistance,txt,__q__<strong>YourString</strong>__q__,___&LIMIT=1</code></p>
+<div class='frmSearch'>
+  <input type='text' id='search-box-find_similar_values_by_levenshtein_distance' placeholder='find_similar_values_by_levenshtein_distance' value='sandonadepiave'/><button id='button_find_similar_values_by_levenshtein_distance' type='button'>Evaluate Text</button>
+  <div class='compbox' id='suggesstion-box-find_similar_values_by_levenshtein_distance'></div>
+</div>
+<script>
+  $(document).ready(function(){
+  $('#button_find_similar_values_by_levenshtein_distance').click(function(){
+  $.ajax({
+  url: 'api.tcl?SELECT=txt&FROM&___&SELECT__s__DISTINCT=txt&FROM=elements&JOIN=eltile&ON=element&__e__=elements.id&JOIN=tiles&ON=tiles.rowid&__e__=eltile.tile&JOIN=tags&ON=tags.id&__e__=elements.id&JOIN=vals&ON=vals.rowid&__e__=tags.val&WHERE=tiles.col&__e__=280444&AND=tiles.row&__e__=187294&AND=elements.datasrc&LIKE=__q__OSM.CUR.SD__q__,___&ORDER__s__BY=__levenshteinDistance,txt,__q__'+$("#search-box-find_similar_values_by_levenshtein_distance").val()+'__q__,___&LIMIT=1',
+  type: 'GET',
+  beforeSend: function(){
+  $('#search-box-find_similar_values_by_levenshtein_distance').css('background','#FFF url(media/img/loading.gif) no-repeat 165px');
+  },
+  success: function(data){
+  curdata=data;
+  uldata = '<ul>';
+    data.features.forEach(function(element) {
+    uldata = uldata + '<li onClick="selectString(\''+element.properties.txt+'\',\'#search-box-find_similar_values_by_levenshtein_distance\',\'#suggesstion-box-find_similar_values_by_levenshtein_distance\')">'+element.properties.txt+'</li>';
+    });
+    uldata = uldata + '</ul>';
+  $('#suggesstion-box-find_similar_values_by_levenshtein_distance').show();
+  $('#suggesstion-box-find_similar_values_by_levenshtein_distance').html(uldata);
+  $('#search-box-find_similar_values_by_levenshtein_distance').css('background','#FFF');
+  }
+  });
+  });
+  });
+</script>
+
+
+<h3 id="get_geodata">Obtaining geodata - Selecting existing objects.</h3>
+<p>Click on an object to see attribute values.</p>
+<textarea id="urltext" style="width:100%" rows="7">SELECT=elements.id&AS=id,__AsGeoJSON,geom,___,datasrc,__group_concat,__printf,__q____p__s__r____p__s__q__,keys.txt,vals.txt,___,___&AS=data&FROM=elements&JOIN=eltile&ON=element&__e__=elements.id&JOIN=tiles&ON=tiles.rowid&__e__=eltile.tile&JOIN=tags&ON=tags.id&__e__=elements.id&JOIN=keys&ON=keys.rowid&__e__=tags.key&JOIN=vals&ON=vals.rowid&__e__=tags.val&WHERE=tiles.col&__e__=280444&AND=tiles.row&__e__=187294&AND=datasrc&__e__=__q__OSM.CUR.SD__q__&GROUP__s__BY=elements.id</textarea> <button type="button" onclick="map.removeLayer(vectorLayer);url = document.getElementById('urltext').value;getvectlay(url);map.addLayer(vectorLayer)">UPDATE</button>
+<div id="map_data" style="width:100%;height:300px"></div>
+<div id="popup" class="ol-popup">
+  <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+  <div id="popup-content"></div>
+</div>
+<script>
+  var url = document.getElementById("urltext").value;
+  getvectlay(url);
+  pops();
+  var map = new ol.Map({
+  controls: ol.control.defaults({
+  attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+  collapsible: true
+  })
+  }).extend([
+  new ol.control.FullScreen(),
+  new ol.control.Rotate()
+  ]),
+  interactions: ol.interaction.defaults().extend([
+  new ol.interaction.DragRotateAndZoom()
+  ]),
+  layers: [osml,vectorLayer],
+  overlays: [overlay],
+  target: 'map_data',
+  view: new ol.View({
+  center: ol.proj.transform(getJSON('api.tcl?SELECT=__tile2geom,280444,187294,19,4,___').features[0].geometry.coordinates,'EPSG:4326', 'EPSG:3857'),
+  zoom: 19
+  }),
+  });
+
+  map.on('singleclick', function(evt) {
+  var innerdata = map.forEachFeatureAtPixel(evt.pixel, function(feature) {
+  f = feature;
+  s="<h4>ID "+feature.getId()+":</h4>";
+  s+='<table>';feature.getKeys().forEach(function(element) {
+    if (element!='geometry' && element != 'weight') s+='<tr><td>'+element+':</td><td>'+feature.get(element)+'</td></tr>';
+    });s+='</table>';
+  return s;});
+  var coordinate = evt.coordinate;
+  if (typeof innerdata === 'undefined') {
+  return
+  }
+  content.innerHTML = innerdata;
+  overlay.setPosition(coordinate);});
+  map.on('pointermove', function(evt) {
+  map.getTargetElement().style.cursor = map.hasFeatureAtPixel(evt.pixel) ? 'pointer' : '';
+  });
+  map.on('pointermove', function(evt) {
+  map.getTargetElement().style.cursor = map.hasFeatureAtPixel(evt.pixel) ? 'pointer' : '';
+  });
+  osml.on('postcompose', function(event) {
+  var context = event.context;
+  var canvas = context.canvas;
+  var image = context.getImageData(0, 0, canvas.width, canvas.height);
+  var data = image.data;
+  for (var i = 0, ii = data.length; i < ii; i += 4) {
+					data[i] = data[i + 1] = data[i + 2] = (3 * data[i] + 4 * data[i + 1] + data[i + 2]) / 8;
+					}
+					context.putImageData(image, 0, 0);
+					});
+
+
+					var highlightedFeatures = [],
+					selectStyle = new ol.style.Style({
+					stroke: new ol.style.Stroke({
+					color: '#0d47a1',
+					width: 2
+					}),
+					image: new ol.style.Circle({
+					radius: 5.5,
+					stroke: new ol.style.Stroke({
+					color: '#0d47a1',
+					width: 2
+					})
+					})
+					});
+					map.on('pointermove', function(e) {
+					var i;
+					for (i = 0; i < highlightedFeatures.length; i++) {
+							highlightedFeatures[i].setStyle(null);
+							}
+							highlightedFeatures = [];
+							map.forEachFeatureAtPixel(e.pixel, function(feature) {
+							feature.setStyle(selectStyle);
+							highlightedFeatures.push(feature);
+							});
+							});
+
+
+
+
+							</script>
+
+
+<h3 id="client_snap">Client side snapping functionality for digitizing.</h3>
+<div id="map_snap_client" style="width:100%;height:300px"></div>
+<form id="options-form" automplete="off">
+  <div class="radio">
+    <label>
+      <input type="radio" name="interaction" value="draw" id="draw" checked>
+      Draw &nbsp;
+    </label>
+  </div>
+  <div class="form-group">
+    <label>Draw type &nbsp;</label>
+    <select name="draw-type" id="draw-type">
+      <option value="Point">Point</option>
+      <option value="LineString">LineString</option>
+      <option value="Polygon">Polygon</option>
+      <option value="Circle">Circle</option>
+    </select>
+  </div>
+</form>
+<script>
+  var map_snap = new ol.Map({
+  controls: ol.control.defaults({
+  attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+  collapsible: true
+  })
+  }).extend([
+  new ol.control.FullScreen(),
+  new ol.control.Rotate()
+  ]),
+  interactions: ol.interaction.defaults().extend([
+  new ol.interaction.DragRotateAndZoom()
+  ]),
+  layers: [osml,vectorLayer],
+  target: 'map_snap_client',
+  view: new ol.View({
+  center: ol.proj.transform(getJSON('api.tcl?SELECT=__tile2geom,280444,187294,19,4,___').features[0].geometry.coordinates,'EPSG:4326', 'EPSG:3857'),
+  zoom: 19
+  }),
+  });
+
+  map_snap.on('pointermove', function(evt) {
+  map_snap.getTargetElement().style.cursor = map_snap.hasFeatureAtPixel(evt.pixel) ? 'pointer' : '';
+  });
+  osml.on('postcompose', function(event) {
+  var context = event.context;
+  var canvas = context.canvas;
+  var image = context.getImageData(0, 0, canvas.width, canvas.height);
+  var data = image.data;
+  for (var i = 0, ii = data.length; i < ii; i += 4) {
+					data[i] = data[i + 1] = data[i + 2] = (3 * data[i] + 4 * data[i + 1] + data[i + 2]) / 8;
+					}
+					context.putImageData(image, 0, 0);
+					});
+
+					var optionsForm = document.getElementById('options-form');
+					var Draw = {
+					init: function() {
+					map_snap.addInteraction(this.Point);
+					this.Point.setActive(false);
+					map_snap.addInteraction(this.LineString);
+					this.LineString.setActive(false);
+					map_snap.addInteraction(this.Polygon);
+					this.Polygon.setActive(false);
+					map_snap.addInteraction(this.Circle);
+					this.Circle.setActive(false);
+					},
+					Point: new ol.interaction.Draw({
+					source: vectorLayer.getSource(),
+					type: /** @type {ol.geom.GeometryType} */ ('Point')
+					}),
+					LineString: new ol.interaction.Draw({
+					source: vectorLayer.getSource(),
+					type: /** @type {ol.geom.GeometryType} */ ('LineString')
+					}),
+					Polygon: new ol.interaction.Draw({
+					source: vectorLayer.getSource(),
+					type: /** @type {ol.geom.GeometryType} */ ('Polygon')
+					}),
+					Circle: new ol.interaction.Draw({
+					source: vectorLayer.getSource(),
+					type: /** @type {ol.geom.GeometryType} */ ('Circle')
+					}),
+					getActive: function() {
+					return this.activeType ? this[this.activeType].getActive() : false;
+					},
+					setActive: function(active) {
+					var type = optionsForm.elements['draw-type'].value;
+					if (active) {
+					this.activeType && this[this.activeType].setActive(false);
+					this[type].setActive(true);
+					this.activeType = type;
+					} else {
+					this.activeType && this[this.activeType].setActive(false);
+					this.activeType = null;
+					}
+					}
+					};
+					Draw.init();
+
+
+					/**
+					* Let user change the geometry type.
+					* @param {Event} e Change event.
+					*/
+					optionsForm.onchange = function(e) {
+					var type = e.target.getAttribute('name');
+					var value = e.target.value;
+					if (type == 'draw-type') {
+					Draw.getActive() && Draw.setActive(true);
+					} else if (type == 'interaction') {
+					if (value == 'modify') {
+					Draw.setActive(false);
+					Modify.setActive(true);
+					} else if (value == 'draw') {
+					Draw.setActive(true);
+					Modify.setActive(false);
+					}
+					}
+					};
+
+					Draw.setActive(true);
+					var snap = new ol.interaction.Snap({
+					source: vectorLayer.getSource()
+					});
+					map_snap.addInteraction(snap);
+					</script>
+
+
+<h3>Server-side snapping functionality</h3>
+<!--  <p>It is possible to implement server side snap functionality. <code>Snap</code> and <code>MakePoint,MakeLine,MakePolygon</code> Spatialite functions should be utilized.</p>-->
+
+<div id="map_snap_server" style="width:100%;height:300px"></div>
+<form id="options-form2" automplete="off">
+  <div class="radio">
+    <label>
+      <input type="radio" name="interaction" value="draw" id="draw" checked>
+      Draw &nbsp;
+    </label>
+  </div>
+  <div class="form-group">
+    <label>Draw type &nbsp;</label>
+    <select name="draw-type" id="draw-type">
+      <option value="Point">Point</option>
+      <option value="LineString">LineString</option>
+      <option value="Polygon">Polygon</option>
+      <option value="Circle">Circle</option>
+    </select>
+  </div>
+</form>
+<script>
+  emptyvector = new ol.layer.Vector({source:new ol.source.Vector({})});
+  var map_snap2 = new ol.Map({
+  controls: ol.control.defaults({
+  attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+  collapsible: true
+  })
+  }).extend([
+  new ol.control.FullScreen(),
+  new ol.control.Rotate()
+  ]),
+  interactions: ol.interaction.defaults().extend([
+  new ol.interaction.DragRotateAndZoom()
+  ]),
+  layers: [osml,emptyvector],
+  target: 'map_snap_server',
+  view: new ol.View({
+  center: ol.proj.transform(getJSON('api.tcl?SELECT=__tile2geom,280444,187294,19,4,___').features[0].geometry.coordinates,'EPSG:4326', 'EPSG:3857'),
+  zoom: 19
+  }),
+  });
+
+  map_snap2.on('pointermove', function(evt) {
+  map_snap2.getTargetElement().style.cursor = map_snap2.hasFeatureAtPixel(evt.pixel) ? 'pointer' : '';
+  });
+  osml.on('postcompose', function(event) {
+  var context = event.context;
+  var canvas = context.canvas;
+  var image = context.getImageData(0, 0, canvas.width, canvas.height);
+  var data = image.data;
+  for (var i = 0, ii = data.length; i < ii; i += 4) {
+					data[i] = data[i + 1] = data[i + 2] = (3 * data[i] + 4 * data[i + 1] + data[i + 2]) / 8;
+					}
+					context.putImageData(image, 0, 0);
+					});
+
+					var optionsForm2 = document.getElementById('options-form2');
+					var Draw2 = {
+					init: function() {
+					map_snap2.addInteraction(this.Point);
+					this.Point.setActive(false);
+					map_snap2.addInteraction(this.LineString);
+					this.LineString.setActive(false);
+					map_snap2.addInteraction(this.Polygon);
+					this.Polygon.setActive(false);
+					map_snap2.addInteraction(this.Circle);
+					this.Circle.setActive(false);
+					},
+					Point: new ol.interaction.Draw({
+					source: emptyvector.getSource(),
+					type: /** @type {ol.geom.GeometryType} */ ('Point')
+					}),
+					LineString: new ol.interaction.Draw({
+					source: emptyvector.getSource(),
+					type: /** @type {ol.geom.GeometryType} */ ('LineString')
+					}),
+					Polygon: new ol.interaction.Draw({
+					source: emptyvector.getSource(),
+					type: /** @type {ol.geom.GeometryType} */ ('Polygon')
+					}),
+					Circle: new ol.interaction.Draw({
+					source: emptyvector.getSource(),
+					type: /** @type {ol.geom.GeometryType} */ ('Circle')
+					}),
+					getActive: function() {
+					return this.activeType ? this[this.activeType].getActive() : false;
+					},
+					setActive: function(active) {
+					var type = optionsForm2.elements['draw-type'].value;
+					if (active) {
+					this.activeType && this[this.activeType].setActive(false);
+					this[type].setActive(true);
+					this.activeType = type;
+					} else {
+					this.activeType && this[this.activeType].setActive(false);
+					this.activeType = null;
+					}
+					}
+					};
+					Draw2.init();
+
+
+					/**
+					* Let user change the geometry type.
+					* @param {Event} e Change event.
+					*/
+					optionsForm2.onchange = function(e) {
+					var type = e.target.getAttribute('name');
+					var value = e.target.value;
+					if (type == 'draw-type') {
+					Draw2.getActive() && Draw2.setActive(true);
+					} else if (type == 'interaction') {
+					if (value == 'modify') {
+					Draw2.setActive(false);
+					Modify.setActive(true);
+					} else if (value == 'draw') {
+					Draw2.setActive(true);
+					Modify.setActive(false);
+					}
+					}
+					};
+					Draw2.setActive(true);
+					var snap2 = new ol.interaction.Snap({
+					source: emptyvector.getSource()
+					});
+					map_snap2.addInteraction(snap2);
+					function serverSnap() {
+					coords = [];
+					oldcoords = [];
+					var curval = false;
+					emptyvector.getSource().getFeatures().forEach(function(f) {
+					f.getGeometry().flatCoordinates.forEach(function(coord) {
+					oldcoords.push(coord);
+					if (curval) {
+					coords.push(String(curval)+' '+String(coord));
+					curval = false;
+					} else {
+					curval = coord;
+					}
+
+					})})
+					var wkt = '__Transform,__GeomFromText,__q__MULTIPOINT&___='+coords.join(',')+'_____q__,3857___,4326___';
+					var to = '&___&SELECT=__Collect,geom,___&FROM=elements&WHERE=elements.datasrc&__e__=__q__OSM.CUR.SD__q__&AND=__MbrIntersects,geom,__Buffer,'+wkt+',0.00004___,___,___';
+					url = 'api.tcl?SELECT=__AsGeoJSON,__Transform,__Snap,'+wkt+'__c__'+to+',0.00004___,3857___,___&AS=GeoJSON';
+					url = url.replace(/ /g, '%20');
+					snaped =  getJSON(url);
+					newcoords = [];
+					for (i = 0; i < snaped.features[0].geometry.coordinates.length; i++) {
+							newcoords.push(snaped.features[0].geometry.coordinates[i][0]);
+							newcoords.push(snaped.features[0].geometry.coordinates[i][1]);
+							}
+							emptyvector.getSource().getFeatures().forEach(function(f) {
+							fe = f;
+							c1 = f.getGeometry().getCoordinates();
+							if (Array.isArray(c1[0])) {
+							c1.forEach(function(c2) {
+							if (Array.isArray(c2[0])) {
+							c2.forEach(function(c3) {
+							if (Array.isArray(c3[0])) {
+							} else {
+							c3[0] = newcoords[oldcoords.indexOf(c3[0])];
+							c3[1] = newcoords[oldcoords.indexOf(c3[1])];
+							}
+							})} else {
+							c2[0] = newcoords[oldcoords.indexOf(c2[0])];
+							c2[1] = newcoords[oldcoords.indexOf(c2[1])];
+							}
+							})
+							} else {
+							c1[0] = newcoords[oldcoords.indexOf(c1[0])];
+							c1[1] = newcoords[oldcoords.indexOf(c1[1])];
+							}
+							f.getGeometry().setCoordinates(c1);
+							})
+							}
+							</script>
+<button type='button' onclick='serverSnap()'>Snap Features</button>
+</div>
+<h1>QoS - GSDR - Test </h1>
+<img id='gsdrwmimg' src='https://gmedia/img/1x1.png'/>
+<footer id="footer">This is an embeddable instance of <a href="https://wgn.gsdr.gq">GSDR</a></footer></body></html>

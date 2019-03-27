@@ -1,0 +1,126 @@
+# $Id$
+
+set testfilename1 config.rvt
+
+::tcltest::test config-1.1 {ErrorScript config test} {
+    apachetest::start {
+	    -c "RivetUserConf ErrorScript 'puts \"Page broken\"'"
+    } {} {
+        catch {
+            set page [::http::geturl "${urlbase}$testfilename1?brokenpage"]
+            set match [string trim [::http::data $page]]
+            ::http::cleanup $page
+        }
+    }
+    set match
+} {Page broken}
+
+::tcltest::test config-1.2 {ErrorScript config test} {
+    apachetest::start {
+	-c "RivetUserConf ErrorScript 'puts \"Page broken\"'" -c "AccessFileName test-htaccess"
+    } {} {
+        catch {
+            set page [::http::geturl "${urlbase}$testfilename1?brokenpage"]
+            set match [string trim [::http::data $page]]
+            ::http::cleanup $page
+        }
+    }
+    set match
+} {Local Page Header
+this page is BROKEN}
+
+::tcltest::test config-2.1 {BeforeScript test} {
+    set fl [open htaccess2 w]
+    puts $fl {RivetUserConf BeforeScript 'puts "Local Page Header"'}
+    close $fl
+    apachetest::start { -c "AccessFileName htaccess2" } {} {
+        catch {
+            set page [::http::geturl "${urlbase}$testfilename1?goodpage"]
+            set match [string trim [::http::data $page]]
+            ::http::cleanup $page
+            # Now change what's in the ".htaccess" file, and see if it
+            # picks it up.
+            set fl [open htaccess2 w]
+            puts $fl {RivetUserConf BeforeScript 'puts "New Local Page Header"'}
+            close $fl
+            set page [::http::geturl "${urlbase}$testfilename1?goodpage"]
+            append match [string trim [::http::data $page]]
+            ::http::cleanup $page
+        }
+    }
+    set match
+} {Local Page Header
+Page BodyNew Local Page Header
+Page Body}
+
+# List of all the configs to try
+
+set ConfigList {
+    {-c "RivetUserConf BeforeScript 'puts \"Page Header\"'"}
+    {-c "RivetUserConf BeforeScript 'puts \"Page Header\"'" -c "AccessFileName test-htaccess"}
+    {-c "RivetUserConf AfterScript 'puts \"Page Footer\"'"}
+    {-c "RivetUserConf AfterScript 'puts \"Page Footer\"'" -c "AccessFileName test-htaccess"}
+    {-D DIRTEST}
+    {-D DIRTEST -c "AccessFileName test-htaccess"}
+    {-D DIRTEST -D SERVERCONFTEST}
+    {-D SERVERCONFTEST -c "AccessFileName test-htaccess"}
+    {-D SERVERCONFTEST}
+    {-D DIRTEST -D SERVERCONFTEST -c "AccessFileName test-htaccess"}
+}
+
+# Corresponding list of results we should get
+
+set ResultList {
+{Page Header
+Page Body}
+
+{Local Page Header
+Page Body
+Local Page Footer}
+
+{Page Body
+Page Footer}
+
+{Local Page Header
+Page Body
+Local Page Footer}
+
+{Page Header
+Page Body
+Page Footer}
+
+{Local Page Header
+Page Body
+Local Page Footer}
+
+{Page Header
+Page Body
+Page Footer}
+
+{Local Page Header
+Page Body
+Local Page Footer}
+
+{Page Header
+Page Body
+Page Footer}
+
+{Local Page Header
+Page Body
+Local Page Footer}
+}
+
+
+set i 0
+foreach Config $ConfigList {
+    incr i
+    ::tcltest::test config-auto-${i}.1 {config test} {
+        apachetest::start $Config {} {
+            catch {
+                set page [::http::geturl "${urlbase}$testfilename1?goodpage"]
+                set match [string trim [::http::data $page]]
+            }
+        }
+        set match
+    } [lindex $ResultList [expr $i - 1]]
+}

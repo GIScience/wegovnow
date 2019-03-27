@@ -1,0 +1,3 @@
+<?
+::rivet::upload save [::rivet::upload names] uploadedjpeg.jpg
+?>

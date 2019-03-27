@@ -1,0 +1,10 @@
+<?
+
+# hello-1.1
+puts "Hello, World\n"
+
+# i18n-1.1
+puts "ก ภ ศ ฬ า ู - El Burro Sabe Mแs Que T๚!\n"
+
+?>
+<p>ฦüหÜธ์(EUC-JP Japanese text)</p>

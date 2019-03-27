@@ -1,0 +1,34 @@
+
+
+$Id$
+
+Rivet can be built under FreeBSD without any special tweaks.
+
+Rivet is a port in the FreeBSD ports tree.  To build the latest one
+supported there, cd to /usr/ports/www/mod_rivet and do a make install
+or equivalent.
+
+To build from source, first you need to build and install Tcl and Apache...
+
+    cd /usr/ports/lang/tcl85
+    make
+    make install
+
+    cd /usr/ports/www/apache22
+    make
+    make install
+
+Since the maintainer of the Tcl stuff in the FreeBSD ports tree has
+chosen to have Tcl build in such a way that there can be multiple different
+versions on a system at the same time, stuff isn't quite in the expected
+place.
+
+Run configure in this directory with the following parameters:
+
+./configure  --with-tcl=/usr/local/lib/tcl8.5
+
+If you want to build with debugging symbols enabled for debugging Apache
+and mod_rivet with gdb or whatever, add "--enable-symbols" to the above.
+
+Your mileage may vary.
+
