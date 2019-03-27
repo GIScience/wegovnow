@@ -18,7 +18,7 @@ If you re-use any of the components, modules, or plugins, please acknowledge the
 
 This repository provides mirrored versions of an embeddable instance of Geo-Spatial Data Repository for "Grand" Quality (https://wgn.gsdr.gq), Integrated Geo-Information System Tool Kit (http://igis.tk, see also igistk directory), and Tiles Common Framework (http://tiles.cf, see also tilescf directory). This repository provides all developed source code and required dependencies. Futher, instructions for the deployment of EmGSDR (embeddable GSDR) instances for WeGovNow pilot sites are provided.
 
-(Notice, that full databases for pilot instances can be downloaded from here: https://wgn.gsdr.gq/sd_gsdr_wgn.sqlite.zip , https://wgn.gsdr.gq/sw_gsdr_wgn.sqlite.zip , and https://wgn.gsdr.gq/tr_gsdr_wgn.sqlite.zip . )
+(Notice that full databases for pilot instances can be downloaded from here: https://wgn.gsdr.gq/sd_gsdr_wgn.sqlite.zip , https://wgn.gsdr.gq/sw_gsdr_wgn.sqlite.zip , and https://wgn.gsdr.gq/tr_gsdr_wgn.sqlite.zip . )
 
 # Installation on Debian-like systems (Debian, Ubuntu, Mint, etc.)
 
@@ -185,7 +185,7 @@ $ sudo cp www/html/qosapi.tcl www/html/*.js www/html/*.css /var/www/html
 $ sudo cp ps/sandona/index.html /var/www/html
 $ sudo chmod +r /var/www/html/*
 ````
-### 3) Configuring System =
+### 3) Configuring System
 
 Add the following instructions to  
 
