@@ -1,4 +1,12 @@
-			     Apache Rivet
+Warning! This is a modified version of Apache Rivet 3.1.1
+It was modified to allow installing on CentOS 7. Thus, it may work improperly
+on other systems. CentOS 7 uses quite obsolete versions of required dependencies.
+It's strongly recommended to use original sources on other systems with up-to-date dependencies
+(e.g., Debian Jessie+). The performance of this version is slightly lower.
+
+
+
+                             Apache Rivet
 			     ============
 
 See the doc/html/installation.html directory for installation and usage instructions.
